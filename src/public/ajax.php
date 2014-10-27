@@ -15,6 +15,13 @@ switch ($action){
         $id = (int)$_GET['id'];
         deleteAddress($id);
         break;
+    case "save":
+        saveAddress();
+        break;
+    case "loadAddress":
+        $id = (int)$_GET['id'];
+        loadAddress($id);
+        break;        
 }
 /**
  * structure CSV : 
@@ -87,6 +94,53 @@ function deleteAddress($id){
     echo $stmt->execute(array($id));
 };
 
+function saveAddress(){
+    $data['id'] = (int) $_POST['id'];
+    $data['nom'] = (string) $_POST['nom'];
+    $data['desc'] = (string) $_POST['description'];
+    $data['adresse'] = (string) $_POST['adresse'];
+    $data['url'] = (string) $_POST['url'];
+    
+    $pdo = dbConnect();
+    
+    if ($data['id'] === 0){
+        $sql = "INSERT INTO coords (coords_nom, coords_desc, coords_adresse, coords_url) "
+            ."VALUES (:nom, :desc, :adresse, :url)";
+        $stmt = $pdo->prepare($sql);
+        unset($data['id']);
+        try {
+            $result = $stmt->execute($data);
+            echo $result;
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
+    } else {
+        $sql = "UPDATE coords 
+                SET coords_nom = :nom,
+                    coords_desc = :desc, 
+                    coords_adresse = :adresse, 
+                    coords_url = :url
+                WHERE coords_id = :id";
+                $stmt = $pdo->prepare($sql);
+                $result = $stmt->execute($data);    
+                echo $result;
+    }    
+
+}
+
+function loadAddress($id){
+    $pdo = dbConnect();
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    
+    $sql = "SELECT *
+        FROM coords
+        WHERE coords_id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':id', $id);
+    $stmt->execute();
+    $result = $stmt->fetch();
+    echo json_encode($result);
+}    
 
 function dbConnect(){
     $dsn = 'mysql:dbname=project;host=localhost';
