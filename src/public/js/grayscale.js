@@ -38,15 +38,15 @@ function init() {
     // For more options see: https://developers.google.com/maps/documentation/javascript/reference#MapOptions
     var mapOptions = {
         // How zoomed in you want the map to start at (always required)
-        zoom: 15,
+        zoom: 13,
 
         // The latitude and longitude to center the map (always required)
-        center: new google.maps.LatLng(40.6700, -73.9400), // New York
+        center: new google.maps.LatLng(45.76, 4.84), // New York
 
         // Disables the default Google Maps UI components
         disableDefaultUI: true,
-        scrollwheel: false,
-        draggable: false,
+        scrollwheel: true,
+        draggable: true,
 
         // How you would like to style the map. 
         // This is where you would paste any style found on Snazzy Maps.
@@ -169,10 +169,51 @@ function init() {
 
     // Custom Map Marker Icon - Customize the map-marker.png file to customize your icon
     var image = 'img/map-marker.png';
-    var myLatLng = new google.maps.LatLng(40.6700, -73.9400);
+    /*var myLatLng = new google.maps.LatLng(40.6700, -73.9400);
     var beachMarker = new google.maps.Marker({
         position: myLatLng,
         map: map,
         icon: image
     });
+    */
+    
+    return mapOptions;
 }
+
+$('#addresses-table').on('draw.dt',function(){
+	$.getJSON('ajax.php?action=loadAddresses')
+		// si cette requête fonctionne 
+		.done(function(result){
+			
+			var mapOptions = init();
+			var mapElement = document.getElementById('map');
+			var map = new google.maps.Map(mapElement, mapOptions);
+			var image = 'img/map-marker.png';
+
+			var adresses = result.data;
+			var geocoder = new google.maps.Geocoder();
+			$.each(adresses, function(index,value){
+				
+				geocoder.geocode( { 'address': value[2]}, function(results, status) {
+					if (status == google.maps.GeocoderStatus.OK) {
+						var marker = new google.maps.Marker({
+				            position: results[0].geometry.location,
+				            map: map,
+				            icon: image,
+				            title: value[0]
+				        });
+						var contentString = '<div' +
+						'<div></div> '+
+						'<h1>' + value[0] + '<h1>' + '</div>';
+						var infowindow = new google.maps.InfoWindow({
+							content: contentString
+						});						
+						google.maps.event.addListener(marker, 'click', function(){
+							infowindow.open(map, marker);
+						})
+				    }
+				});
+			});
+		});
+});
+

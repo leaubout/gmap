@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Grayscale - Start Bootstrap Theme</title>
+    <title>Carnet d'adresses</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -48,7 +48,7 @@
                     <i class="fa fa-bars"></i>
                 </button>
                 <a class="navbar-brand page-scroll" href="#page-top">
-                    <i class="fa fa-play-circle"></i>  <span class="light">Start</span> Bootstrap
+                    <i class="fa fa-play-circle"></i>  Gestion d'un carnet d'adresses
                 </a>
             </div>
 
@@ -64,6 +64,9 @@
                     </li>
                     <li>
                         <a class="page-scroll" href="#addresses">Adresses</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#address">Adresse</a>
                     </li>
                     <li>
                         <a class="page-scroll" href="#map">Map</a>
@@ -141,10 +144,10 @@
     </section>
 
     <!-- Insert/Update Section -->
-    <section id="section-form" class="container content-section text-center">
+    <section id="address" class="container content-section text-center">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2">
-                <h2>Ajouter / modifier une adresse</h2>
+                <h2>Ajout / modification d'une adresse</h2>
 				<form role="form" id="form1">
 					<div class="form-group">
 						<label for="nom">Nom</label> 
@@ -164,14 +167,19 @@
 					</div>		
 					<input type="hidden" id="id" name="id" value="">				
 					<input type="hidden" id="action" name="action" value="save">
-					<button type="submit" class="btn btn-default" id="submit">Submit</button>
+					<button type="submit" class="btn btn-default" id="submit">Enregistrer</button>
 				</form>
 			</div>
         </div>
     </section>
 
     <!-- Map Section -->
-    <div id="map"></div>
+    <section id="map-section" class="container content-section text-center">
+    	<div>
+    		<h2>Visualisation des adresses</h2>
+    		<div id="map"></div>
+    	</div>
+    </section>
 
     <!-- Footer -->
     <footer>
@@ -191,9 +199,6 @@
 
     <!-- Google Maps API Key - Use your own API key to enable the map feature. More information on the Google Maps API can be found at https://developers.google.com/maps/ -->
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRngKslUGJTlibkQ3FkfTxj3Xss1UlZDA&sensor=false"></script>
-
-    <!-- Custom Theme JavaScript -->
-    <script src="js/grayscale.js"></script>
     
     <script src="assets/sweetalert/lib/sweet-alert.min.js"></script>
     <script src="assets/datatables/media/js/jquery.dataTables.min.js"></script>
@@ -245,54 +250,59 @@
     		}).on('draw.dt',function(){
    				$('a[data-action]').on('click',function(e){
    					e.preventDefault();
-                        var action = $(this).data('action');
-                        var id = $(this).data('id');
-                        console.log(action);
-						console.log(id);
-	   					if (action == 'delete'){
-	   						swal({
-	   							title: "Êtes-vous certain ?",
-	   							text: "L'enregistrement sera définitivement supprimé.",
-								type: "warning",
-								showCancelButton: true,
- 								confirmButtonColor: "#DD6B55",
- 								confirmButtonText: "Oui, supprimer !",
-								closeOnConfirm: false, 
-							}, // fonction exécutée si confirmation
-							function(){
-		                        $.get('ajax.php?action=delete&id=' + id)
-		                        // si cette requête fonctionne, on va recharger le datatables
-		                        .done(function(){
-		                        	var table = new $.fn.dataTable.Api('#addresses-table');
-		                            table.ajax.reload();
-		                        });
-		                        swal("Supprimé !", "Cette adresse n'existe plus.", "success");
-							}); 
-                        } else if (action == 'edit'){
-	                        $.get('ajax.php?action=loadAddress&id=' + id)
-                                // si cette requête fonctionne, on scrolle vers le formulaire
-                                .done(function(result){
-                                    $('#id').val(result['coords_id']);
-                                    $('#action').val('edit');
-                                    $('#nom').val(result['coords_nom']);
-                                    $('#description').val(result['coords_desc']);
-                                    $('#adresse').val(result['coords_adresse']);
-                                    $('#url').val(rresult['coords_url']);
-                                    $('html body').animate({
-                                        scrollTop: $("#section-form").offset().top
-                                    }, 500);
-                                });  
-	                    }
-   					
+                    var action = $(this).data('action');
+                    var id = $(this).data('id');
+					if (action == 'delete'){
+						swal({
+							title: "Êtes-vous certain ?",
+							text: "L'enregistrement sera définitivement supprimé.",
+							type: "warning",
+							showCancelButton: true,
+							confirmButtonColor: "#DD6B55",
+							confirmButtonText: "Oui, supprimer !",
+							closeOnConfirm: false, 
+						}, // fonction exécutée si confirmation
+						function(){
+                      		$.get('ajax.php?action=delete&id=' + id)
+                      			// si cette requête fonctionne, on va recharger le datatables
+                      			.done(function(){
+                      				var table = new $.fn.dataTable.Api('#addresses-table');
+                          			table.ajax.reload();
+                      			});
+                      		swal("Supprimé !", "Cette adresse n'existe plus.", "success");
+						}); 
+                    } else if (action == 'edit'){
+                    	$.getJSON('ajax.php?action=loadAddress&id=' + id)
+                        	// si cette requête fonctionne, on scrolle vers le formulaire
+                            .done(function(result){
+                            	$('#id').val(result.coords_id);
+                                $('#action').val('save');
+                                $('#nom').val(result.coords_nom);
+                                $('#description').val(result.coords_desc);
+                                $('#adresse').val(result.coords_adresse);
+                                $('#url').val(result.coords_url);
+                                $('html body').animate({
+                                    scrollTop: $("#address").offset().top
+                                }, 500);
+                            });  
+					}
+				
    				});		
    			});
-    		// formulaire
+    		
+    		// Formulaire : création ou modification d'un enregistrement
     		$('#submit').on('click', function(e){
     			e.preventDefault();
 				$.post('ajax.php', $('#form1').serialize())	
                     .done(function(){
                         var table = new $.fn.dataTable.Api('#addresses-table');
                         table.ajax.reload();
+                        $('#id').val("");
+                        $('#action').val("");
+                        $('#nom').val("");
+                        $('#description').val("");
+                        $('#adresse').val("");
+                        $('#url').val("");
                         $('html body').animate({
                             scrollTop: $("#addrTitle").offset().top
                         }, 500);
@@ -301,6 +311,9 @@
     		});
     	});
     </script>
+    
+    <!-- Custom Theme JavaScript -->
+    <script src="js/grayscale.js"></script>
 
 </body>
 
