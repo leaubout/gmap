@@ -2,3 +2,6 @@
 /.vagrant/
 /.buildpath
 /.project
+
+/vendor/
+/composer.lock

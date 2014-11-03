@@ -1,0 +1,22 @@
+{
+  "name": "miniProjetC",
+  "version": "0.0.0",
+  "homepage": "https://github.com/leaubout/gmap",
+  "authors": [
+    "P1 <leaubout@gmail.com>"
+  ],
+  "main": "src/public/index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/public/assets",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "sweetalert": "~0.3.1",
+    "datatables": "~1.10.3"
+  }
+}

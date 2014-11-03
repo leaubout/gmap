@@ -1,0 +1,12 @@
+{
+    "name": "root/project",
+    "require": {
+        "neitanod/forceutf8": "~1.4"
+    },
+    "authors": [
+        {
+            "name": "Jane Doe",
+            "email": "test@test.com"
+        }
+    ]
+}
