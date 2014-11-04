@@ -11,6 +11,10 @@ switch ($action){
     case "loadAddresses" :
         loadAddresses();
         break;
+    case "delete":
+        $id = (int)$_GET['id'];
+        deleteAddress($id);
+        break;
 }
 /**
  * structure CSV : 
@@ -75,6 +79,13 @@ function loadAddresses(){
     $response = array('data' => $result);
     echo json_encode($response);
 }
+
+function deleteAddress($id){
+    $pdo = dbConnect();
+    $sql = "DELETE FROM coords WHERE coords_id = ?";
+    $stmt = $pdo->prepare($sql);
+    echo $stmt->execute(array($id));
+};
 
 
 function dbConnect(){

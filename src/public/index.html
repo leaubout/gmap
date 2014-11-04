@@ -231,13 +231,22 @@
     		});
     		
     		// DataTables
-    		$('#addresses-table').dataTable({
+    		var table = $('#addresses-table').dataTable({
     			ajax: 'ajax.php?action=loadAddresses',
     			initComplete: function(){
     				$('a[data-action]').on('click',function(e){
     					e.preventDefault();
-    					console.log($(this).data('id'));
-    					console.log($(this).data('action'));
+                        var action = $(this).data('action');
+                        var id = $(this).data('id');
+    					if (action == 'delete'){
+                            $.get('ajax.php?action=delete&id=' + id)
+                                // si cette requête fonctionne, on va recharger le datatables
+                                .done(function(result){
+                                    table.ajax.reload();
+                                });
+                        } else if (action == 'edit'){
+
+                        }
     					
     				});		
     			}
