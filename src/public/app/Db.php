@@ -70,7 +70,8 @@ class Db
        return (bool) ($this->connexion instanceof PDO);
    }
    
-   //Lazy loading
+   //Lazy loading = chargement tardif
+   // pour ne pas surcharger la phase d'initialisation
    public function getConnexion()
    {
        if (!$this->isConnected()) {

@@ -1,5 +1,7 @@
 <?php 
 
+// requête http en objet
+// plus de action dans $_REQUEST
 class Request 
 {
     /**
