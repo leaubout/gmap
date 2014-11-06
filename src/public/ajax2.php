@@ -1,47 +1,28 @@
 <?php 
-
 require '../../vendor/autoload.php';
 use \ForceUTF8\Encoding;
 
-require_once 'app/Request.php';
-require_once 'app/Db.php';
+$action = $_REQUEST['action'];
 
-try{
-    $request = new Request;
-    $db = new Db('mysql', 'localhost', 'project', 'root', '0000');
-    var_dump($db->getConnexion()); exit;
-    // Vérifie AJAX 
-    if (!$request->isXhr()) {
-        echo 'BAD METHOD';
-        exit(0);
-    }
-    $action = $request->getParam('action');
-    
-    switch($action) {
-        case "upload" :
-            uploadCsv();
-            break;
-        case "loadAddresses" :
-            loadAddresses();
-            break;
-        case "loadAddress" :
-            $id = (int) $_GET['id'];
-            loadAddress($id);
-            break;
-        case "delete" :
-            $id = (int) $_GET['id'];
-            deleteAddress($id);    
-            break;
-        case "save" :
-            saveAddress();
-            break;
-    }
-    
-} catch(Exception $e) {
-    echo $e->getMessage();
+switch($action) {
+    case "upload" :
+        uploadCsv();
+        break;
+    case "loadAddresses" :
+        loadAddresses();
+        break;
+    case "loadAddress" :
+        $id = (int) $_GET['id'];
+        loadAddress($id);
+        break;
+    case "delete" :
+       $id = (int) $_GET['id'];
+       deleteAddress($id);
+       break;
+    case "save" :
+        saveAddress();
+        break;
 }
-
-
 
 /**
  * structure CSV :
