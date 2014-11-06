@@ -1,6 +1,11 @@
 <?php 
 
 require_once 'Address.php';
+
+/**
+ * Service layer for addresses handling (API)
+ *
+ */
 class AddressService
 {
 
@@ -15,7 +20,7 @@ class AddressService
     
     /**
      * inserts in Db addresses stored in a flat CSV file
-     * @param string $csv CSV formatted addresses
+     * @param string $csv CSV formated addresses
      * @return number of lines inserted
      */
     public function upload($csv){
