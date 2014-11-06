@@ -5,11 +5,13 @@ use \ForceUTF8\Encoding;
 
 require_once 'app/Request.php';
 require_once 'app/Db.php';
-require_once 'app/Address.php';
+require_once 'app/AddressMapper.php';
+require_once 'app/AddressService.php';
 try{
     $request = new Request;
     $db = new Db('mysql', 'localhost', 'project', 'root', '0000');
-    $address = new Address($db);
+    $addressMapper = new AddressMapper($db);    // composition
+    $addressService = new AddressService($addressMapper);
     // Vérifie AJAX 
     if (!$request->isXhr()) {
         echo 'BAD METHOD';
@@ -19,27 +21,27 @@ try{
     
     switch($action) {
         case "upload" :
-            echo $address->uploadCsv(
+            echo $addressService->upload(
                 $request->getParam('data')
             );
             break;
         case "loadAddresses" :
-            echo $address->fetchAll();
+            echo $addressService->fetchAll();
             break;
         case "loadAddress" :
-            echo $address->find($request->getParam('id'));
+            echo $addressService->find($request->getParam('id'));
             break;
         case "delete" :
-            echo $address->delete($request->getParam('id'));  
+            echo $addressService->delete($request->getParam('id'));  
             break;
         case "save" :
-            echo $address->save(array(
-                'id' => (int) $request->getParam('id'),
-                'nom' => (string) $request->getParam('nom'),
-                'desc' => (string) $request->getParam('description'),
-                'adresse' => (string) $request->getParam('adresse'),
-                'url' => (string) $request->getParam('url')    
-            ));
+            echo $addressService->save(
+                (string) $request->getParam('nom'),
+                (string) $request->getParam('description'),
+                (string) $request->getParam('adresse'),
+                (string) $request->getParam('url'),
+                (int) $request->getParam('id')
+            );
             break;
     }
     
